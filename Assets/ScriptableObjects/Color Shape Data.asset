@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 358eabac03fdd694b87d082762bbdb4f, type: 3}
   m_Name: Color Shape Data
   m_EditorClassIdentifier: 
+  color: {r: 1, g: 0, b: 0, a: 1}
+  sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
