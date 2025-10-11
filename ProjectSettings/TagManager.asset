@@ -6,17 +6,21 @@ TagManager:
   tags:
   - Color
   - Shape
+  - Ground
+  - Life
+  - Coin
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Ground
+  - Enemy
+  - Life
+  - Coin
   - 
   - 
   - 
