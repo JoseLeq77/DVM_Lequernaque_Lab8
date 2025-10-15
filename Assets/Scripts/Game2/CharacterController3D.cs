@@ -5,6 +5,7 @@ public class CharacterController3D : MonoBehaviour
 {
     private Rigidbody myRB;
     public float speed = 5f;
+    [SerializeField] private Vector3 initialPosition;
 
     [SerializeField] private Vector2 movement;
 
@@ -14,16 +15,38 @@ public class CharacterController3D : MonoBehaviour
     [SerializeField] private float raycastDistance;
 
     private bool _canJump = false;
+    private bool _jumpAllowed = true;
+    private bool _movementAllowed = true;
 
 
     private void Awake()
     {
         myRB = GetComponent<Rigidbody>();
+        initialPosition = transform.position;
+    }
+
+    private void OnEnable()
+    {
+        GameManager.OnRestart += ResetPlayerPosition;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnRestart -= ResetPlayerPosition;
     }
 
     private void FixedUpdate()
     {
-        ApllyPhysics();
+        ApllyAllPhysics();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DeathZone"))
+        {
+            GameManager.Instance.SetPlayerDead(true);
+            GameManager.Instance.CheckLose();
+        }
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -43,11 +66,27 @@ public class CharacterController3D : MonoBehaviour
         }
     }
 
-    public void ApllyPhysics()
+    public void ApllyAllPhysics()
+    {
+        if (_movementAllowed)
+        {
+            MovementPhysics();
+        }
+
+        if (_jumpAllowed)
+        {
+            JumpPhysics();
+        }
+    }
+
+    private void MovementPhysics()
     {
         movement = movement.normalized;
         myRB.linearVelocity = new Vector3(movement.x * speed, myRB.linearVelocity.y, movement.y * speed);
+    }
 
+    private void JumpPhysics()
+    {
         bool RaycastDetection = Physics.Raycast(transform.position, Vector3.down, raycastDistance, groundLayers);
 
         if (RaycastDetection)
@@ -62,9 +101,18 @@ public class CharacterController3D : MonoBehaviour
         }
     }
 
-    public void ModifyCanJump(bool b)
+    public void SetJumpAllowed(bool b)
     {
-        _canJump = b;
+        _jumpAllowed = b;
     }
 
+    public void SetMovementAllowed(bool b)
+    {
+        _movementAllowed = b;
+    }
+
+    public void ResetPlayerPosition()
+    {
+        transform.position = initialPosition;
+    }
 }
